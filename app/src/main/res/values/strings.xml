@@ -5,6 +5,7 @@
     <string name="label_oval">Oval</string>
     <string name="label_rectangle">Rectangle</string>
     <string name="label_line">Line</string>
+    <string name="label_arrow">Arrow</string>
     <string name="label_emoji">Emoji</string>
     <string name="label_sticker">Sticker</string>
     <string name="label_eraser">Eraser</string>
@@ -12,6 +13,7 @@
     <string name="label_text">Text</string>
     <string name="label_filter">Filter</string>
     <string name="label_adjust">Adjust</string>
+    <string name="msg_tap_image_for_text">Tap the image to place your text</string>
     <string name="msg_save_image">Are you want to exit without saving image ?</string>
     <string name="app_intent_name">PhotoEditor</string>
     <string name="msg_save_image_to_share">Please save image to share</string>

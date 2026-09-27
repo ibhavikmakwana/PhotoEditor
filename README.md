@@ -1,7 +1,7 @@
 # PhotoEditor
 
 ![Github Action](https://github.com/burhanrashid52/PhotoEditor/actions/workflows/app_build_and_test.yml/badge.svg)
-[![Downloads](https://img.shields.io/badge/Download-1.5.1-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/1.5.1/aar) ![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
+[![Downloads](https://img.shields.io/badge/Download-3.1.1-blue.svg)](https://search.maven.org/artifact/com.burhanrashid52/photoeditor/3.1.1/aar) ![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg) [![JavaDoc](https://img.shields.io/badge/JavaDoc-PhotoEditor-blue.svg)](https://burhanrashid52.github.io/PhotoEditor/) [![Uplabs](https://img.shields.io/badge/Uplabs-PhotoEditor-orange.svg)](https://www.uplabs.com/posts/photoeditor)
 [![AndroidArsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoEditor-blue.svg)](https://android-arsenal.com/details/1/6736)
 [![AndroidDevDigest](https://img.shields.io/badge/AndroidDev%20Digest-%23185-brightgreen.svg)](https://www.androiddevdigest.com/digest-185)
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
@@ -31,6 +31,7 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - [**Deleting**](#deleting) Views
 - [**Saving**](#saving) Photo after editing.
 - More [**FAQ**](#faq).
+- [Lesson Learned from building successful android library PhotoEditor: Droidcon Berlin 2021](#lesson-learned-from-building-successful-android-library-photoeditor-droidcon-berlin-2021)
 
 
 
@@ -39,18 +40,19 @@ A Photo Editor library with simple, easy support for image editing using Paints,
 - Increase efficiency
 - Easy image editing
 
-
-## AndroidX
-PhotoEditor ```v.1.0.0``` is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to v.0.4.0. Any fix in PR are Welcome :)
-
-
 ## Getting Started
 To start with this, we need to simply add the dependencies from `mavenCentral()` in the gradle file of our app module like this
 ```groovy
-implementation 'com.burhanrashid52:photoeditor:1.5.1'
+implementation 'com.burhanrashid52:photoeditor:3.1.1'
 ```
 or we can also import the :photoeditor module from sample for further customization
 
+## Migrations
+### AndroidX
+PhotoEditor [v.1.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.0.0) is a migration to androidX and dropping the support of older support library. There are no API changes. If you find any issue migrating to v.1.0.0 , please follow this [Guide](https://developer.android.com/jetpack/androidx/migrate). If you still facing the issue than you can always rollback to [v.0.4.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.0.4.0). Any fix in PR are Welcome :)
+
+### Kotlin
+PhotoEditor [v.2.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.2.0.0) is fully migrated to Kotlin. You can use [v.1.5.1](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.1.5.1) for the Java version. There are no breaking API changes in these two versions.
 
 ## Setting up the View
 First we need to add `PhotoEditorView` in our xml layout
@@ -66,29 +68,27 @@ First we need to add `PhotoEditorView` in our xml layout
 We can define our drawable or color resource directly using `app:photo_src`
 
 We can set the image programmatically by getting source from `PhotoEditorView` which will return a `ImageView` so that we can load image from resources,file or (Picasso/Glide)
-```java
-PhotoEditorView mPhotoEditorView = findViewById(R.id.photoEditorView);
+```kotlin
+mPhotoEditorView = findViewById(R.id.photoEditorView)
 
-mPhotoEditorView.getSource().setImageResource(R.drawable.got);
+mPhotoEditorView.source.setImageResource(R.drawable.paris_tower)
 ```
 
 ## Building a PhotoEditor
 To use the image editing feature we need to build a PhotoEditor which requires a Context and PhotoEditorView which we have to setup in our xml layout
 
 
-```java
+```Kotlin
 //Use custom font using latest support library
-Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
-
+val mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium)
 //loading font from asset
-Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
+val mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf")
 
-mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
-         .setPinchTextScalable(true)
-         .setClipSourceImage(true)
-         .setDefaultTextTypeface(mTextRobotoTf)
-         .setDefaultEmojiTypeface(mEmojiTypeFace)
-         .build();
+mPhotoEditor = PhotoEditor.Builder(this, mPhotoEditorView)
+            .setPinchTextScalable(pinchTextScalable) // set flag to make text scalable when pinch
+            .setDefaultTextTypeface(mTextRobotoTf)
+            .setDefaultEmojiTypeface(mEmojiTypeFace)
+            .build() // build photo editor sdk
  ```
 We can customize the properties in the PhotoEditor as per our requirement
 
@@ -108,14 +108,14 @@ We can customize our brush and paint with different set of property. To start dr
 
 ![](https://i.imgur.com/INi5LIy.gif)
 
-| Type  | Method |
-| ------------- | ------------- |
-| Enable/Disable  | `mPhotoEditor.setBrushDrawingMode(true);` |
-| Shape (brush, line, oval, rectangle)  | `mPhotoEditor.addShape(shape)` |
-| Shape size (px)  | `mPhotoEditor.setBrushSize(brushSize)` or through the a ShapeBuilder |
-| Shape opacity (In %)  |   `mPhotoEditor.setOpacity(opacity)` or through the a ShapeBuilder |
-| Shape color | `mPhotoEditor.setBrushColor(colorCode)` or through the a ShapeBuilder |
-| Brush Eraser  | `mPhotoEditor.brushEraser()` |
+| Type                                         | Method                                                                 |
+|----------------------------------------------|------------------------------------------------------------------------|
+| Enable/Disable                               | `mPhotoEditor.setBrushDrawingMode(true);`                              |
+| Shape (brush, line, oval, rectangle, arrow)  | `mPhotoEditor.addShape(shape)`                                         |
+| Shape size (px)                              | `mPhotoEditor.setBrushSize(brushSize)` or through the a ShapeBuilder   |
+| Shape opacity (In %)                         | `mPhotoEditor.setOpacity(opacity)` or through the a ShapeBuilder       |
+| Shape color                                  | `mPhotoEditor.setBrushColor(colorCode)` or through the a ShapeBuilder  |
+| Brush Eraser                                 | `mPhotoEditor.brushEraser()`                                           |
 
 **Note**: Whenever we set any property of a brush for drawing it will automatically enable the drawing mode
 
@@ -124,20 +124,20 @@ We can draw shapes from [v.1.5.0](https://github.com/burhanrashid52/PhotoEditor/
 
 ![](https://im2.ezgif.com/tmp/ezgif-2-5d5f7ddbe72e.gif)
 
-```java
-mShapeBuilder = new ShapeBuilder()
-         .withShapeOpacity(100)
-         .withShapeType(ShapeType.OVAL)
-         .withShapeSize(50);
+```kotlin
+val shapeBuilder = ShapeBuilder()
+    .withShapeOpacity(100)
+    .withShapeType(ShapeType.Oval)
+    .withShapeSize(50f)
 
-mPhotoEditor.setShape(mShapeBuilder)
+photoEditor.setShape(mShapeBuilder)
 ```
-For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.java).
+For more details check [ShapeBuilder](https://github.com/burhanrashid52/PhotoEditor/blob/master/photoeditor/src/main/java/ja/burhanrashid52/photoeditor/shape/ShapeBuilder.kt).
 
 ## Filter Effect
 We can apply inbuild filter to the source images using 
 
- `mPhotoEditor.setFilterEffect(PhotoFilter.BRIGHTNESS);`
+ `mPhotoEditor.setFilterEffect(PhotoFilter.BRIGHTNESS)`
 
 ![](https://i.imgur.com/xXTGcVC.gif)
 
@@ -151,13 +151,50 @@ For more details check [Custom Filters](https://github.com/burhanrashid52/PhotoE
 
 ![](https://i.imgur.com/491BmE8.gif)
 
-We can add the text with inputText and colorCode like this
+Use `addText` with named optional parameters:
 
-`mPhotoEditor.addText(inputText, colorCode);` 
+```kotlin
+photoEditor.addText(
+    text = inputText,
+    colorCodeTextView = colorCode
+)
+```
 
-It will take default fonts provided in the builder. If we want different fonts for different text we can set typeface with each text like this
+It uses the default font from the builder unless you provide a typeface:
 
-`mPhotoEditor.addText(mTypeface,inputText, colorCode);`
+```kotlin
+photoEditor.addText(
+    text = inputText,
+    textTypeface = mTypeface,
+    colorCodeTextView = colorCode
+)
+```
+
+To place text away from the default centre position, provide a `Position`:
+
+```kotlin
+photoEditor.addText(
+    text = inputText,
+    position = Position(80, 160),
+    colorCodeTextView = colorCode
+)
+```
+
+Java callers must provide all parameters explicitly:
+
+```java
+mPhotoEditor.addText(inputText, null, new Position(80, 160), null, colorCode);
+```
+
+After insertion, text can still be dragged, rotated, and scaled on the canvas.
+
+In the sample app, the end-user flow is now:
+
+1. Tap `Text`.
+2. Tap the image where the label should appear.
+3. Enter the text in the dialog.
+
+Repeat the same flow to add multiple text labels in different positions on the image.
 
 In order to edit the text we need the view, which we will receive in our PhotoEditor callback. This callback will trigger when we **Long Press** the added text
 
@@ -210,14 +247,26 @@ It will take default fonts provided in the builder. If we want different Emoji f
 
 ## Deleting
   For deleting a Text/Emoji/Image we can click on the view to toggle the view highlighter box which will have a close icon. So, by clicking on the icon we can delete the view.
-  
-  
-  
 
 ## Saving
-   
-   We need to provide a file with callback method when edited image is saved
-   
+
+In [v.3.0.0](https://github.com/burhanrashid52/PhotoEditor/releases/tag/v.3.0.0) onward, we can save an image to a file using coroutines:
+
+```kotlin
+// Please note that if you call this from a fragment, you should call
+// 'viewLifecycleOwner.lifecycleScope.launch' instead.
+lifecycleScope.launch {
+    val result = photoEditor.saveAsFile(filePath)
+    if (result is SaveFileResult.Success) {
+        showSnackbar("Image saved!")
+    } else {
+        showSnackbar("Couldn't save image")
+    }
+}
+```
+
+You can also save an image to a file from Java. We need to provide a file with callback method when edited image is saved.
+
    ```java
     mPhotoEditor.saveAsFile(filePath, new PhotoEditor.OnSaveListener() {
                     @Override
@@ -231,8 +280,9 @@ It will take default fonts provided in the builder. If we want different Emoji f
                     }
                 });
 ```
-For more detail check [Saving](https://github.com/burhanrashid52/PhotoEditor/wiki/Saving)
-    
+
+For more details see [Saving](https://github.com/burhanrashid52/PhotoEditor/wiki/Saving)
+
 ## How to contribute?
 * Check out contribution guidelines 👉[CONTRIBUTING.md](https://github.com/burhanrashid52/PhotoEditor/blob/master/CONTRIBUTING.md)
 
@@ -285,8 +335,9 @@ No. Currently, the focus is on making the android library better. We don't have 
 </details>
 
 ### Who is using PhotoEditor?
-1. [Best Quotes & Status 2019 (99000+ Collection)](https://play.google.com/store/apps/details?id=com.swastik.quotesandstatus&hl=en_US)
-2. [Pixxo](https://play.google.com/store/apps/details?id=com.pixxo.breezil.pixxo)
+1. [Pixxo](https://play.google.com/store/apps/details?id=com.pixxo.breezil.pixxo)
+2. [Couple Blog: Long distance](https://play.google.com/store/apps/details?id=com.coupleblog)
+3. [Screenshot Tile (NoRoot)](https://f-droid.org/packages/com.github.cvzi.screenshottile/)
 
 **Note**: I will be happy to add your app to the list. Please reach out to me with details. You know how to reach me :)
 
@@ -300,9 +351,16 @@ If you found this project helpful or you learned something from the source code 
 
 <a href="https://www.producthunt.com/posts/photoeditor-2?utm_source=badge-review&utm_medium=badge&utm_souce=badge-photoeditor-2#discussion-body" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/review.svg?post_id=297508&theme=light" alt="PhotoEditor - Android SDK with simple, easy support for image editing. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
+## Lesson Learned from building successful android library PhotoEditor: Droidcon Berlin 2021
+
+[![Lesson Learned from building successful android library PhotoEditor](https://burhanrashid52.com/wp-content/uploads/2021/11/246719409_10220774611897971_6342954485444508610_n-940x510.jpg)](https://player.vimeo.com/video/643904719 "Lesson Learned from building successful android library PhotoEditor")
+
+### [Open source Support](https://jb.gg/OpenSourceSupport) by [JetBrains](https://www.jetbrains.com)
+
+
 ## MIT License
 
-Copyright (c) 2020 Burhanuddin Rashid
+Copyright (c) 2022 Burhanuddin Rashid
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

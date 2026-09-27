@@ -1,5 +1,12 @@
 # Change Logs
 
+### 3.1.1
+- New : Add `Position` and `PhotoEditor.addText(..., position)` overloads for initial text placement
+- New : Sample app now lets users tap the image to place text before entering it
+- Test : Add targeted placement coverage in `GraphicManagerTest` and update sample app test flow for tap-to-place text
+- Docs : Update `README.md` with developer API usage and end-user sample app instructions, including adding multiple text labels
+- Fixed : Mirror upstream issue #589 in this fork by removing the "always centered" text insertion limitation
+
 ## 0.1.1
 - Change : `app:src="@drawable/got_s"` to `app:photo_src="@drawable/got_s"` in `PhotoEditorView`
 
@@ -82,3 +89,28 @@ new TextStyleBuilder()
 ### 1.5.1
 - New : #379 Should disallow drawing on left or right of the image using `photoEditor.setClipSourceImage(true)`
 - New/Break : #383 Get a callback when the image source is touched `onTouchSourceImage(MotionEvent event);`
+
+### 2.0.0
+- New : Migrated the app and library to Kotlin
+
+### 3.0.0
+- New : Arrow shape
+- Change : (Breaking Change) `minSdkVersion` changed to `21`
+- Change : (Breaking Change) Shape names are no longer UPPERCASE
+- New : Suspending functions for saving images: `saveAsFile(String[, SaveSettings])` and `saveAsBitmap([SaveSettings])`
+- Fixed : #374 `IndexOutOfBoundsException` when saving bitmap
+
+### 3.0.1
+- New : #518 Fix Builder methods' return type in Java
+- Fixed : #522 Leak Graphics memory when changing filter
+
+### 3.0.2
+- Fixed : #460 Wrong return value of undo() method
+
+### 3.1.0
+- New : Added `shapePaintStyle` to `ShapeBuilder` for stroke/fill control
+- New : Added `undoStackCount`, `redoStackCount`, `isUndoAvailable`, `isRedoAvailable` to `PhotoEditor`
+- Fixed : Clearing redo stack after brush drawing
+- Fixed : Using eraser size when in erasing mode
+- Change : Bumped Kotlin to 2.0.0, AGP to 8.5.1, Gradle to 8.9, target SDK to 34
+- Removed : Non-functional `OnMultiTouchListener` interface
